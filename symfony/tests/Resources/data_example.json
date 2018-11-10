@@ -1,0 +1,30 @@
+{
+  "amount": 9.99,
+  "booking_date": "2018-01-01 12:00:01",
+  "parts": [
+    {
+      "reason": "debtor_payback",
+      "amount": 2.00
+    },
+    {
+      "reason": "bank_charge",
+      "amount": 1.00
+    },
+    {
+      "reason": "payment_request",
+      "amount": 1.50
+    },
+    {
+      "reason": "unidentified",
+      "amount": 1.50
+    },
+    {
+      "reason": "unidentified",
+      "amount": 2.00
+    },
+    {
+      "reason": "debtor_payback",
+      "amount": 1.99
+    }
+  ]
+}
