@@ -54,3 +54,16 @@ curl -X POST \
   ]
 }'
 ```
+
+### Testing Bank
+
+Because I'm not spending tons of time on this project the testing is very straightforward.
+Bank uses PHPUnit tests which run on the host and not in the container. For a real project I would refactor this, 
+to run the tests inside the container so the host doesn't need php.
+
+To run the tests, make sure all container from docker-compose are running like explained above and run this.
+The testing data is not removed from the database, in a real project you would test on a different database or mock out
+the database for unit tests.
+```
+php symfony/bin/phpunit -c symfony/phpunit.xml
+```
