@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BankTransactionPartRepository")
  */
-class BankTransactionPart
+class BankTransactionPart implements \JsonSerializable
 {
     const mandatoryFields = ["reason", "amount"];
 
@@ -34,6 +34,22 @@ class BankTransactionPart
      * @ORM\JoinColumn(nullable=false)
      */
     private $BankTransaction;
+
+    /**
+     * @throws \InvalidArgumentException
+     * @param \stdClass $data
+     * @return BankTransactionPart
+     */
+    public static function fromJsonObject(\stdClass $data)
+    {
+        self::ensureMandatoryFieldsAreGiven($data);
+
+        $part = new self();
+        $part->setReason($data->reason);
+        $part->setAmount($data->amount);
+
+        return $part;
+    }
 
     public function getId(): ?int
     {
@@ -80,20 +96,12 @@ class BankTransactionPart
         return $this;
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     * @param \stdClass $data
-     * @return BankTransactionPart
-     */
-    public static function fromJsonObject(\stdClass $data)
+    public function jsonSerialize()
     {
-        self::ensureMandatoryFieldsAreGiven($data);
-
-        $part = new self();
-        $part->setReason($data->reason);
-        $part->setAmount($data->amount);
-
-        return $part;
+        return [
+            "reason" => $this->getReason(),
+            "amount" => $this->getAmount(),
+        ];
     }
 
     /**

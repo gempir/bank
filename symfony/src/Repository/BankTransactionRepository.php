@@ -19,32 +19,13 @@ class BankTransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, BankTransaction::class);
     }
 
-    // /**
-    //  * @return BankTransaction[] Returns an array of BankTransaction objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function persist(BankTransaction $bankTransaction)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $this->_em->persist($bankTransaction);
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?BankTransaction
+    public function flush()
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $this->_em->flush();
     }
-    */
 }

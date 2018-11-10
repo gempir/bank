@@ -18,33 +18,4 @@ class BankTransactionPartRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, BankTransactionPart::class);
     }
-
-    // /**
-    //  * @return BankTransactionPart[] Returns an array of BankTransactionPart objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?BankTransactionPart
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

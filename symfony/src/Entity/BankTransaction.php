@@ -10,7 +10,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BankTransactionRepository")
  */
-class BankTransaction
+class BankTransaction implements \JsonSerializable
 {
     const mandatoryFields = ["amount", "booking_date", "parts"];
 
@@ -37,13 +37,37 @@ class BankTransaction
     private $booking_date;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\BankTransactionPart", mappedBy="BankTransaction", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\BankTransactionPart", mappedBy="BankTransaction", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $bankTransactionParts;
 
     public function __construct()
     {
         $this->bankTransactionParts = new ArrayCollection();
+    }
+
+    /**
+     * @throws \Exception
+     * @param \stdClass $data
+     * @return BankTransaction
+     */
+    public static function fromJsonObject(\stdClass $data)
+    {
+        self::ensureMandatoryFieldsAreGiven($data);
+
+        $transaction = new self();
+        $transaction->setAmount($data->amount);
+        $transaction->setUuid(Uuid::uuid4());
+        $transaction->setBookingDate(\DateTime::createFromFormat("Y-m-d H:i:s", $data->booking_date));
+
+        foreach ($data->parts as $part) {
+            $transactionPart = BankTransactionPart::fromJsonObject($part);
+            $transactionPart->setBankTransaction($transaction);
+
+            $transaction->addBankTransactionPart($transactionPart);
+        }
+
+        return $transaction;
     }
 
     public function getId(): ?int
@@ -118,30 +142,13 @@ class BankTransaction
         return $this;
     }
 
-    /**
-     * @throws \Exception
-     * @param \stdClass $data
-     * @return BankTransaction
-     */
-    public static function fromJsonObject(\stdClass $data)
+    public function jsonSerialize()
     {
-        self::ensureMandatoryFieldsAreGiven($data);
-
-        $transaction = new self();
-        $transaction->setAmount($data->amount);
-        $transaction->setUuid(Uuid::uuid4());
-        $transaction->setBookingDate(\DateTime::createFromFormat("Y-m-d H:i:s", $data->booking_date));
-
-        $parts = new ArrayCollection();
-
-        foreach ($data->parts as $part) {
-            $transactionPart = BankTransactionPart::fromJsonObject($part);
-            $transactionPart->setBankTransaction($transaction);
-
-            $parts->add($transactionPart);
-        }
-
-        return $transaction;
+        return [
+            "amount" => $this->getAmount(),
+            "booking_date" => $this->getBookingDate()->format("Y-m-d H:i:s"),
+            "parts" => $this->getBankTransactionParts()->toArray(),
+        ];
     }
 
     /**
