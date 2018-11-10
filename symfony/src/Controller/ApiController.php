@@ -34,15 +34,15 @@ class ApiController extends AbstractController
             return new JsonResponse(["error" => "Error parsing json: " . json_last_error_msg()], Response::HTTP_BAD_REQUEST);
         }
 
-//        try {
+        try {
             $bankTransaction = BankTransaction::fromJsonObject($data);
 
             $this->entityManager->persist($bankTransaction);
             $this->entityManager->flush();
 
             return new JsonResponse(["uuid" => $bankTransaction->getUuid()], Response::HTTP_CREATED);
-//        } catch (\Exception $e) {
-//            return new JsonResponse(["error" => "Error creating transaction: " . $e->getMessage()], Response::HTTP_BAD_REQUEST);
-//        }
+        } catch (\Exception $e) {
+            return new JsonResponse(["error" => "Error creating transaction: " . $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 }
